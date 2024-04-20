@@ -15,5 +15,4 @@ class Produk extends Model
        'stok',
        'gambar'
     ];
-    
 }

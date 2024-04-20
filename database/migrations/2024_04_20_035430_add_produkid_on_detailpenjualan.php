@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelanggan', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_pelanggan');
-            $table->text('alamat');
-            $table->string('no_telp');
-            $table->timestamps();
-              });
+        Schema::table('detailpenjualan', function(Blueprint $table){
+        $table->unsignedBigInteger ('produk_id');
+
+        $table->foreign('produk_id')->references('id')->on('produk')->onDelete('cascade');
+
+    });
     }
 
     /**
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pelanggan');
+        //
     }
 };

@@ -55,7 +55,38 @@ Route::group(['middleware' => ['userAkses:admin', 'auth']], function () {
         Route::put('update-product/{id}', 'updateStok')->name('produk.updateStok');
     });
 
- 
+    // Pengelolaan pengguna admin
+    Route::get('/user', [AdminController::class, 'user'])->name('user');
+    Route::get('/tambahUser', [AdminController::class, 'tambah'])->name('tambahUser');
+    Route::post('/kirim-data', [AdminController::class, 'tambahUser'])->name('kirim-data');
+    Route::get('/editUsers/{id}', [AdminController::class, 'editUsers'])->name('editUsers');     
+    Route::patch('/updateUser/{id}', [AdminController::class, 'updateUser'])->name('updateUser'); 
+    Route::get('/delete/{id}',  [AdminController::class, 'destroy'])->name('delete');
+});
+
+// Rute khusus untuk petugas
+Route::group(['middleware' => ['userAkses:petugas', 'auth']], function () {
+    Route::get('/dashboard_petugas', [PetugasController::class, 'index'])->name('dashboard_petugas');
+    Route::get('/produk-petugas', [ProdukController::class, 'indexPetugas'])->name('produk_petugas');
+    
+    // Rute untuk halaman tambah penjualan
+    Route::get('/penjualan/tambah', [PenjualanController::class, 'tambah'])->name('tambah_item');
+    
+    // Rute untuk menyimpan data penjualan baru
+    Route::post('/penjualan/simpan', [PenjualanController::class, 'simpan'])->name('simpan_item');
+    
+    // Rute untuk menampilkan detail penjualan
+    Route::get('/penjualan/{id}', [PenjualanController::class, 'detail'])->name('detail_item');
+    
+    // Rute untuk menghapus penjualan
+    Route::delete('/penjualan/{id}', [PenjualanController::class, 'hapus'])->name('hapus_item');
+
+    // Menampilkan halaman penjualan
+    Route::get('/penjualan', [PenjualanController::class, 'tampilkanPenjualan'])->name('petugas.pesan_item');
+    
+    // Menyimpan penjualan
+    Route::post('/simpan-penjualan', [PetugasController::class, 'simpanPenjualan'])->name('petugas.simpan_item');
+});
 
 
 

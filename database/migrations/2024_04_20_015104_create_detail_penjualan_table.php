@@ -8,12 +8,10 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('detail_penjualan', function (Blueprint $table) {
+        Schema::create('detailpenjualan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('penjualan_id');
             $table->integer('jumlah_produk');
@@ -21,16 +19,15 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('penjualan_id')->references('id')->on('penjualan')->onDelete('cascade');
+
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('detail_penjualan');
+        Schema::dropIfExists('detailpenjualan');
     }
 };

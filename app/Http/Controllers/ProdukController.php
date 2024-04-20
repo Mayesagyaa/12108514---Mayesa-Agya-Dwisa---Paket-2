@@ -2,60 +2,117 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produk;
 use Illuminate\Http\Request;
-use App\Models\Penjualan;
+use Illuminate\Queue\Jobs\RedisJob;
 
-class PenjualanController extends Controller
+class ProdukController extends Controller
 {
-    public function tampilkanPenjualan()
+    public function index()
     {
-        $penjualan = Penjualan::all(); // Mengambil semua data penjualan
-        return view('petugas.penjualan.index', compact('penjualan')); // Meneruskan data penjualan ke tampilan
+        $produk = Produk::get();
+        return view('admin.produk.index', compact('produk'));
     }
 
-    // Menampilkan halaman tambah penjualan
     public function tambah()
     {
-        return view('penjualan.tambah');
+        return view('admin.produk.form');
     }
 
-    // Menyimpan data penjualan baru
     public function simpan(Request $request)
     {
-        // Validasi data input
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:255',
-            'alamat_pelanggan' => 'required|string|max:255',
-            'nomor_telepon' => 'required|string|max:15',
-            // tambahkan validasi lainnya sesuai kebutuhan
+            'nama_produk' => 'required',
+            'harga' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Simpan data penjualan ke database
-        $penjualan = new Penjualan();
-        $penjualan->nama_pelanggan = $request->nama_pelanggan;
-        $penjualan->alamat_pelanggan = $request->alamat_pelanggan;
-        $penjualan->nomor_telepon = $request->nomor_telepon;
-        // tambahkan field lainnya sesuai kebutuhan
-        $penjualan->save();
+        $input = $request->all();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('detail_penjualan', $penjualan->id)
-            ->with('success', 'Penjualan berhasil disimpan.');
+        if ($gambar = $request->file('gambar')) {
+            $profileImage = date('YmdHis') . '.' . $gambar->getClientOriginalExtension();
+            $gambar->move(public_path('upload/'), $profileImage);
+            $input['gambar'] = 'upload/' . $profileImage;
+        }
+        $input['stok'] = 0;
+
+        Produk::create($input);
+        return redirect()->route('produk');
     }
 
-    // Menampilkan detail penjualan
-    public function detail($id)
+    public function edit($id)
     {
-        $penjualan = Penjualan::findOrFail($id);
-        return view('penjualan.detail', compact('penjualan'));
+        $produk = Produk::find($id)->first();
+        return view('admin.produk.edit-stok', ['produk' => $produk]);
     }
 
-    // Menghapus penjualan
+    public function update(Request $request, $id)
+    {
+        $input = $request->all();
+        $produk = Produk::find($id);
+
+        if (!$produk) {
+            return redirect()->back()->with('error', 'Produk tidak ditemukan');
+        }
+
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+            $destinationPath = 'upload/';
+
+            // Jika gambar lama ada, hapus gambar lama dari folder upload
+            if ($produk->gambar && file_exists(public_path($produk->gambar))) {
+                unlink(public_path($produk->gambar));
+            }
+
+            $profileImage = date('YmdHis') . "." . $gambar->getClientOriginalExtension();
+            $gambar->move($destinationPath, $profileImage);
+            $input['gambar'] = "upload/$profileImage";
+        } else {
+            // Jika tidak ada gambar baru yang diunggah, hapus input gambar dari data yang akan diupdate
+            unset($input['gambar']);
+        }
+
+        $produk->update($input);
+        return redirect()->route('produk')->with('success', 'Produk berhasil diperbarui');
+    }
+
     public function hapus($id)
     {
-        $penjualan = Penjualan::findOrFail($id);
-        $penjualan->delete();
-        return redirect()->route('produk_petugas')->with('success', 'Penjualan berhasil dihapus.');
+        Produk::find($id)->delete();
+        return redirect()->route('produk');
     }
+
+    public function updateStok(Request $request, $id)
+{
+    // Validasi input stok
+    $request->validate([
+        'stok' => 'required|numeric',
+    ]);
+
+    // Temukan produk berdasarkan ID
+    $produk = Produk::findOrFail($id);
+
+    // Update stok produk dengan nilai baru dari request
+    $message = $produk->update([
+        'stok' => $request->stok,
+    ]);
+
+    // Redirect kembali dengan pesan 
+    if($message){
+        return response(['message' => 'Update stock successfully']);
+    }
+
 }
+
+public function indexPetugas()
+{
+    $produk = Produk::all(); // Mengambil semua data produk
+    return view('petugas.produk.produkPetugas', compact('produk')); // Mengirim data produk ke view
+}
+
+    
+
+}
+
+    
 

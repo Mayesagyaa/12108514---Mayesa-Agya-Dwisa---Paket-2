@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Penjualan extends Model
 {
     use HasFactory;
-    
     protected $table =' penjualans';
     protected $fillable =[
         'pelanggan_id',
@@ -19,4 +18,5 @@ class Penjualan extends Model
     public function Pelanggan(){
         return $this->hasOne(Pelanggan::class, 'id', 'pelanggan_id');
     }
+
 }

@@ -69,9 +69,9 @@ Route::group(['middleware' => ['userAkses:petugas', 'auth']], function () {
     Route::get('/dashboard_petugas', [PetugasController::class, 'index'])->name('dashboard_petugas');
     Route::get('/produk-petugas', [ProdukController::class, 'indexPetugas'])->name('produk_petugas');
     
-    // Rute untuk halaman tambah penjualan
-    Route::get('/penjualan/tambah', [PenjualanController::class, 'tambah'])->name('tambah_item');
-    
+  // Rute untuk halaman tambah penjualan// Rute untuk halaman tambah penjualan
+  Route::get('/tambah', [PetugasController::class, 'tambahPenjualan'])->name('penjualan_create');
+
     // Rute untuk menyimpan data penjualan baru
     Route::post('/penjualan/simpan', [PenjualanController::class, 'simpan'])->name('simpan_item');
     
@@ -82,10 +82,16 @@ Route::group(['middleware' => ['userAkses:petugas', 'auth']], function () {
     Route::delete('/penjualan/{id}', [PenjualanController::class, 'hapus'])->name('hapus_item');
 
     // Menampilkan halaman penjualan
-    Route::get('/penjualan', [PenjualanController::class, 'tampilkanPenjualan'])->name('petugas.pesan_item');
+    Route::get('/penjualan', [PetugasController::class, 'tampilkanPenjualan'])->name('petugas.pesan_item');
     
     // Menyimpan penjualan
     Route::post('/simpan-penjualan', [PetugasController::class, 'simpanPenjualan'])->name('petugas.simpan_item');
+
+    // Route untuk menambah jumlah barang
+    Route::post('/tambah-jumlah/{id}', [PenjualanController::class, 'tambahJumlah'])->name('tambah.jumlah');
+
+    // Route untuk mengurangi jumlah barang
+    Route::post('/kurang-jumlah/{id}', [PenjualanController::class, 'kurangJumlah'])->name('kurang.jumlah');
 });
 
 

@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
+use App\Models\Produk;
 
 class PenjualanController extends Controller
 {
-    public function tampilkanPenjualan()
-    {
-        $penjualan = Penjualan::all(); // Mengambil semua data penjualan
-        return view('petugas.penjualan.index', compact('penjualan')); // Meneruskan data penjualan ke tampilan
-    }
+
 
     // Menampilkan halaman tambah penjualan
     public function tambah()
@@ -56,6 +53,36 @@ class PenjualanController extends Controller
         $penjualan = Penjualan::findOrFail($id);
         $penjualan->delete();
         return redirect()->route('produk_petugas')->with('success', 'Penjualan berhasil dihapus.');
+    }
+
+    public function tambahJumlah(Request $request, $id)
+    {
+        $produk = Produk::findOrFail($id);
+        $jumlah = $request->input('jumlah', 1);
+        
+        // Periksa apakah jumlah yang ditambahkan melebihi stok
+        if ($jumlah > $produk->stok) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi');
+        }
+
+        // Perbarui stok dan harga total
+        $produk->stok -= $jumlah;
+        $produk->save();
+
+        // Redirect ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', 'Barang berhasil ditambahkan ke keranjang');
+    }
+
+    public function kurangJumlah($id)
+    {
+        $produk = Produk::findOrFail($id);
+        
+        // Perbarui stok
+        $produk->stok += 1;
+        $produk->save();
+
+        // Redirect ke halaman sebelumnya
+        return redirect()->back();
     }
 }
 

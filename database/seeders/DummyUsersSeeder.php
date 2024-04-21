@@ -17,13 +17,13 @@ class DummyUsersSeeder extends Seeder
                 'name'=> 'Admin',
                 'email' => 'adminn@gmail.com',
                 'role' => 'admin',
-                'password' => '2345', // Tidak perlu di-hash dengan bcrypt()
+                'password' => '12345', // Tidak perlu di-hash dengan bcrypt()
             ], 
             [
                 'name'=> 'Petugas',
                 'email' => 'petugass@gmail.com',
                 'role' => 'petugas',
-                'password' => '2345', // Tidak perlu di-hash dengan bcrypt()
+                'password' => '12345', // Tidak perlu di-hash dengan bcrypt()
             ], 
         ];
 

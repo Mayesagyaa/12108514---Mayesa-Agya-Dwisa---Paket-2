@@ -17,6 +17,7 @@ return new class extends Migration
             $table->float('total_harga',10,2);
             $table->unsignedBigInteger('pelanggan_id');
             $table->foreign('pelanggan_id')->references('id')->on('pelanggan');
+            $table->string('dibuat_oleh');
             $table->timestamps();
         });
     }

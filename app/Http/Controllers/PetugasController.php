@@ -23,31 +23,17 @@ class PetugasController extends Controller
         $penjualan = Produk::all(); // Mengambil semua data penjualan
         return view('petugas.penjualan.index', compact('penjualan')); // Meneruskan data penjualan ke tampilan
     }
+    
+    // public function createPenjualan()
+    // {
+    //     $produk = Produk::all();
+    //     return view('petugas.penjualan.create', compact('produks'));
+    // }
 
-    public function simpanPenjualan(Request $request)
+    public function tambahPenjualan()
     {
-        // Validasi request
-        $request->validate([
-            'nama_pelanggan' => 'required',
-            'alamat_pelanggan' => 'required',
-            'nomor_telepon' => 'required',
-            'produk_id.*' => 'required|exists:produks,id',
-            'jumlah.*' => 'required|integer|min:1',
-        ]);
-
-        // Simpan data penjualan
-        $penjualan = new Penjualan();
-        $penjualan->nama_pelanggan = $request->nama_pelanggan;
-        $penjualan->alamat_pelanggan = $request->alamat_pelanggan;
-        $penjualan->nomor_telepon = $request->nomor_telepon;
-        $penjualan->save();
-
-        // Simpan detail penjualan
-        for ($i = 0; $i < count($request->produk_id); $i++) {
-            $penjualan->produks()->attach($request->produk_id[$i], ['jumlah' => $request->jumlah[$i]]);
-        }
-
-        // Redirect dengan pesan sukses
-        return redirect()->back()->with('success', 'Penjualan berhasil disimpan.');
+        $produk = Produk::all();
+        return view('petugas.penjualan.form',compact('produk'));
     }
 }
+

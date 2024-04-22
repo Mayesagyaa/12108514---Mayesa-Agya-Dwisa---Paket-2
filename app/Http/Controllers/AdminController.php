@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Penjualan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +22,12 @@ class AdminController extends Controller
     public function user(){
         $user = User::all();
         return view ('admin.user.index', compact('user'));
+    }
+
+    public function pembelian()
+    {
+        $penjualans = Penjualan::all();
+        return view('admin.pembelian.index', compact('penjualans'));
     }
 
     public function tambah(){

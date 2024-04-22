@@ -15,6 +15,7 @@ class Penjualan extends Model
     // Fillable fields for mass assignment protection
     protected $fillable = [
         'pelanggan_id',
+        'user_id',
         'tgl_penjualan',
         'total_harga'
     ];
@@ -23,6 +24,16 @@ class Penjualan extends Model
     public function pelanggan() {
         // Ensure correct relationship (hasOne seems correct based on your naming)
         // If Pelanggan has many Penjualan, consider using belongsTo instead
-        return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
+        return $this->belongsTo(Pelanggan::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function detailpenjualans()
+    {
+        return $this->hasMany(DetailPenjualan::class);
     }
 }

@@ -20,7 +20,7 @@ class PetugasController extends Controller
 
     public function tampilkanPenjualan()
     {
-        $penjualan = Produk::all(); // Mengambil semua data penjualan
+        $penjualan = Penjualan::all(); // Mengambil semua data penjualan
         return view('petugas.penjualan.index', compact('penjualan')); // Meneruskan data penjualan ke tampilan
     }
     

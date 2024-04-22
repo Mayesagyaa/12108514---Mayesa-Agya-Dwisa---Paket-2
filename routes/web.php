@@ -55,6 +55,11 @@ Route::group(['middleware' => ['userAkses:admin', 'auth']], function () {
         Route::put('update-product/{id}', 'updateStok')->name('produk.updateStok');
     });
 
+    // Pengelolaan penjualan
+    Route::prefix('pembelian')->group(function() {
+        Route::get('/', [AdminController::class, 'pembelian'])->name('pembelian');
+    });
+
     // Pengelolaan pengguna admin
     Route::get('/user', [AdminController::class, 'user'])->name('user');
     Route::get('/tambahUser', [AdminController::class, 'tambah'])->name('tambahUser');
@@ -75,14 +80,20 @@ Route::group(['middleware' => ['userAkses:petugas', 'auth']], function () {
     // Rute untuk menyimpan data penjualan baru
     Route::post('/penjualan/simpan', [PenjualanController::class, 'simpan'])->name('simpan_item');
     
-    // Rute untuk menampilkan detail penjualan
-    Route::get('/penjualan/{id}', [PenjualanController::class, 'detail'])->name('detail_item');
+    Route::get('/penjualan/detail/{id}', [PenjualanController::class, 'detail'])->name('detail_penjualan');
+    Route::post('/penjualan/hapus/{id}', [PenjualanController::class, 'hapus'])->name('hapus_penjualan');
+
+
     
-    // Rute untuk menghapus penjualan
-    Route::delete('/penjualan/{id}', [PenjualanController::class, 'hapus'])->name('hapus_item');
 
     // Menampilkan halaman penjualan
     Route::get('/penjualan', [PetugasController::class, 'tampilkanPenjualan'])->name('petugas.pesan_item');
+    
+    // Halaman checkout
+    Route::get('/penjualan/tambah/checkout', [PenjualanController::class, 'transaction'])->name('petugas.checkout');
+   
+    // Halaman checkout
+    Route::post('/penjualan/tambah/checkout/store', [PenjualanController::class, 'transactionStore'])->name('petugas.checkout.store');
     
     // Menyimpan penjualan
     Route::post('/simpan-penjualan', [PetugasController::class, 'simpanPenjualan'])->name('petugas.simpan_item');
@@ -92,6 +103,12 @@ Route::group(['middleware' => ['userAkses:petugas', 'auth']], function () {
 
     // Route untuk mengurangi jumlah barang
     Route::post('/kurang-jumlah/{id}', [PenjualanController::class, 'kurangJumlah'])->name('kurang.jumlah');
+
+    Route::post('/produk/update/{id}', [PenjualanController::class, 'updateJumlah'])->name('update.jumlah');
+
+    Route::get('penjualan/{id}/download-pdf', [PenjualanController::class, 'downloadPDF'])->name('penjualan.download.pdf');
+
+
 });
 
 

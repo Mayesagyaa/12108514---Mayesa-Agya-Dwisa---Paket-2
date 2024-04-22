@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('penjualan', function (Blueprint $table) {
             $table->id();
-            $table->date('tgl_penjualan');
-            $table->float('total_harga',10,2);
+            $table->bigInteger('total_harga');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('pelanggan_id');
-            $table->foreign('pelanggan_id')->references('id')->on('pelanggan');
-            $table->string('dibuat_oleh');
+            $table->foreign('pelanggan_id')->references('id')->on('pelanggan')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

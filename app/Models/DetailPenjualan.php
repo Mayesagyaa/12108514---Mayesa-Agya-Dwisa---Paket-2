@@ -9,7 +9,7 @@ class DetailPenjualan extends Model
 {
     use HasFactory;
 
-    protected $table = 'detail_penjualan';
+    protected $table = 'detailpenjualan';
     protected $fillable = [
         'penjualan_id',
         'produk_id',
@@ -18,10 +18,10 @@ class DetailPenjualan extends Model
     ];
 
     public function Penjualan(){
-        return $this->hasOne(Penjualan::class, 'id','penjualan_id');
+        return $this->belongsTo(Penjualan::class);
     }
 
     public function Produk(){
-        return $this->hasOne(Produk::class, 'id', 'produk_id');
+        return $this->belongsTo(Produk::class);
     }
 }

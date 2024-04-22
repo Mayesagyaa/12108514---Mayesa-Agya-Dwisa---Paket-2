@@ -43,14 +43,19 @@
                                 @foreach ($penjualan as $penjualans)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $penjualans->pelanggan_id }}</td>
-                                    <td>{{ $penjualans->tgl_penjualan }}</td>
+                                    <td>{{ $penjualans->pelanggan->nama_pelanggan }}</td>
+                                    <td>{{ $penjualans->created_at->format('d-M-Y') }}</td>
                                     <td>{{ $penjualans->total_harga }}</td>
-                                    <td>{{ $penjualans->created_by }}</td>
-                                    <td>
-                                        <a href="" class="btn btn-success"><i class="fas fa-eye"></i></a>
-                                        <a href="" class="btn btn-primary"><i class="fas fa-download"></i></a>
+                                    <td>{{ $penjualans->user->name }}</td>
+                                    <td class="row">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal{{ $penjualans->id }}"><i class="fas fa-eye"></i></button>
+                                        <a href="{{ route('penjualan.download.pdf', ['id' => $penjualans->id]) }}" class="btn btn-secondary mb-3">Download Detail Pembelian (PDF)</a>
+                                        <form method="POST" action="{{ route('hapus_penjualan', ['id' => $penjualans->id]) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus penjualan ini?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </td>
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -61,4 +66,54 @@
         </div>
     </div>
 </section>
+
+<!-- Modal for showing sale details -->
+@foreach ($penjualan as $penjualans)
+<div class="modal fade" tabindex="-1" role="dialog" id="exampleModal{{ $penjualans->id }}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Sale {{ $penjualans->id }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>Nama Pelanggan: {{ $penjualans->pelanggan->nama_pelanggan }}</div>
+                <div>Alamat Pelanggan: {{ $penjualans->pelanggan->alamat }}</div>
+                <div>Nomor Pelanggan : {{ $penjualans->pelanggan->no_telp }}</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nama Produk</th>
+                            <th scope="col">Banyak Barang</th>
+                            <th scope="col">Harga</th>
+                            <th scope="col">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($penjualans->detailPenjualans as $item)
+                        <tr>
+                            <td>{{ $item->produk->nama_produk }}</td>
+                            <td>{{ $item->jumlah_produk }}</td>
+                            <td>Rp{{ number_format($item->produk->harga, 0, ',' . '.') }}</td>
+                            <td>Rp{{ number_format($item->subtotal, 0, ',' . '.') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div>Total Harga: Rp{{ number_format($penjualans->total_harga, 0, ',' . '.') }}</div>
+        </div>
+        
+            </div>
+            <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection

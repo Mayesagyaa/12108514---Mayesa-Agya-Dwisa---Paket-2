@@ -22,3 +22,4 @@ class UserAkses
         return response()->json('Anda tidak diizinkan mengakses halaman ini');
     }
 }
+
